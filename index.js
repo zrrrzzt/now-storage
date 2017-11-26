@@ -1,8 +1,8 @@
 const crypto = require('crypto');
 const fetch = require('node-fetch');
 const retry = require('async-retry');
-let fileUrl = 'https://api.zeit.co/v2/now/files';
-let deployUrl= 'https://api.zeit.co/v2/now/deployments';
+const FILE_URL = 'https://api.zeit.co/v2/now/files';
+const DEPLOY_URL = 'https://api.zeit.co/v2/now/deployments';
 
 let defaultConfig = {
   deploymentName: 'now-storage',
@@ -45,10 +45,8 @@ async function upload(token, file, config = defaultConfig) {
   const sha = shasum.digest('hex');
 
   // check for teamId
-  if (config.teamId) {
-    fileUrl = `${fileUrl}?teamId=${config.teamId}`
-    deployUrl = `${deployUrl}?teamId=${config.teamId}`
-  }
+  const fileUrl = config.teamId ? `${FILE_URL}?teamId=${config.teamId}` : FILE_URL
+  const deployUrl = config.teamId ? `${DEPLOY_URL}?teamId=${config.teamId}` : DEPLOY_URL
 
   try {
     await retry(
